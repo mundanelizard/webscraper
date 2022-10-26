@@ -1,0 +1,21 @@
+{
+  "name": "web-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.4.3",
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "mime": "^3.0.0",
+    "mysql": "^2.18.1"
+  }
+}
