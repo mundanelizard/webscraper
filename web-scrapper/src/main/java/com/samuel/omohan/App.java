@@ -1,6 +1,8 @@
 package com.samuel.omohan;
 
 
+import com.samuel.omohan.datastore.Book;
+import com.samuel.omohan.datastore.Database;
 import com.samuel.omohan.scrapers.BookScraper;
 
 /**
@@ -10,8 +12,20 @@ import com.samuel.omohan.scrapers.BookScraper;
 public class App 
 {
     public static void main (String[] args) throws InterruptedException {
-        var scraper = new BookScraper();
-        scraper.start();
+        var books = Database.getItems(Book.class);
+
+        if (books.size() < 100) {
+            // start scraping to populate the book list.
+            new BookScraper().start();
+            books = Database.getItems(Book.class);
+        }
+
+        /*
+         * TODO:
+         * - build a 5 web scrapers to populate listings
+         * - build a scraper manager to manage the scrapers
+         * - build an updater to update the scraped data if it's less than a day old.
+         */
     }
 }
 
