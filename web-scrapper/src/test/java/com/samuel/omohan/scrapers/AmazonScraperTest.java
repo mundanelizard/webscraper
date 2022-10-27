@@ -1,4 +1,4 @@
-package com.samuel.omohan.scraper;
+package com.samuel.omohan.scrapers;
 
 public class AmazonScraperTest {
 }

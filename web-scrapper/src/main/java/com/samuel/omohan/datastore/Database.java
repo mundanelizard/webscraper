@@ -1,15 +1,13 @@
 package com.samuel.omohan.datastore;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
-
 public class Database {
-    private static final EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("web-scraper");
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("web-scraper");
 
     public static <T> void createOrUpdate(T item) {
-        EntityManager em = entityManagerFactory.createEntityManager();
+        EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
 
         try {
@@ -24,29 +22,10 @@ public class Database {
         }
     }
 
-    public static List<Camera> getCameras() {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        String query = "SELECT c FROM Camera c";
-
-        TypedQuery<Camera> tq = em.createQuery(query, Camera.class);
-
-        try {
-            return tq.getResultList();
-        } catch (Exception ex) {
-         ex.printStackTrace();
-         System.out.println(ex.getMessage());
-        } finally {
-            em.close();
-        }
-
-        return new ArrayList<>();
-    }
-
-    public static List<Listing> getListings() {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        String query = "SELECT l FROM Listing l";
-
-        TypedQuery<Listing> tq = em.createQuery(query, Listing.class);
+    public static <T> List<T> getItems(Class<T> itemClass) {
+        EntityManager em = emf.createEntityManager();
+        String query = String.format("SELECT t FROM %s t", itemClass.getSimpleName());
+        TypedQuery<T> tq = em.createQuery(query, itemClass);
 
         try {
             return tq.getResultList();
@@ -55,12 +34,14 @@ public class Database {
         }
     }
 
-    public static List<Listing> getListings(String qs) {
-        EntityManager em = entityManagerFactory.createEntityManager();
-        String query = "SELECT l FROM Listing l WHERE l.providerId = :provider";
+    public static <T> List<T> getItemsWhere(Class<T> itemClass, String where, Parameter[] params) {
+        EntityManager em = emf.createEntityManager();
+        String query = String.format("SELECT t FROM %s t WHERE %s", itemClass.getSimpleName(), where);
+        TypedQuery<T> tq = em.createQuery(query, itemClass);
 
-        TypedQuery<Listing> tq = em.createQuery(query, Listing.class);
-        tq.setParameter("provider", qs);
+        for (var param : params) {
+            tq.setParameter(param.key, param.value);
+        }
 
         try {
             return tq.getResultList();
@@ -69,7 +50,14 @@ public class Database {
         }
     }
 
-    public static void closeEntityManager() {
-        entityManagerFactory.close();
+    public static class Parameter {
+        final String key;
+        final Object value;
+
+        public Parameter(String key, String value) {
+            this.key = key;
+            this.value = value;
+        }
+
     }
 }

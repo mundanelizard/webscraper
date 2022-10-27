@@ -17,12 +17,12 @@ mapped to database tables. Database driver, location, userid and pw
         <!-- Define the class for Hibernate which implements JPA -->
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <!-- Define the object that should be persisted in the database -->
-        <class>com.samuel.omohan.datastore.Camera</class>
+        <class>old.com.samuel.omohan.datastore.Camera</class>
         <properties>
             <!-- Driver for DB database -->
             <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver" />
             <!-- URL for DB -->
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/webscraper" />
+            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost/webscraper?createDatabaseIfNotExist=true" />
             <!-- Username -->
             <property name="javax.persistence.jdbc.user" value="root" />
             <!-- Password -->
