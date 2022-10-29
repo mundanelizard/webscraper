@@ -2,7 +2,6 @@ package com.samuel.omohan.scrapers;
 
 import com.samuel.omohan.datastore.Book;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class ScraperManager {
@@ -18,6 +17,7 @@ public class ScraperManager {
         if (scrapers.stream().anyMatch(s -> Objects.equals(s.getId(), scraper.getId())))
             return;
 
+        scraper.setTasks(books);
         this.scrapers.add(scraper);
     }
 
@@ -39,8 +39,7 @@ public class ScraperManager {
                     continue;
                 }
 
-                scraper.setTasks(books);
-                scraper.start();
+                new Thread(scraper).start();
             }
 
             // waits for 10000 seconds before checking the application status.

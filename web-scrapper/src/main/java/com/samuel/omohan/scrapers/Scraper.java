@@ -55,10 +55,6 @@ public abstract class Scraper implements Runnable {
         lastScrapeTime = System.currentTimeMillis();
     }
 
-    public void start() {
-        run();
-    }
-
     // scrapes only when the book hasn't been scraped or is more than 1 day old.
     abstract void scrape(Book book);
 
