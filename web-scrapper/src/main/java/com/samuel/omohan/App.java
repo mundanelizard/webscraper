@@ -4,6 +4,7 @@ package com.samuel.omohan;
 import com.samuel.omohan.datastore.Book;
 import com.samuel.omohan.datastore.Database;
 import com.samuel.omohan.scrapers.BookScraper;
+import com.samuel.omohan.scrapers.ScraperManager;
 
 /**
  * Entry class for web scrapping application.
@@ -19,6 +20,10 @@ public class App
             new BookScraper().start();
             books = Database.getItems(Book.class);
         }
+
+        ScraperManager sm = new ScraperManager(books);
+
+        sm.start();
 
         /*
          * TODO:

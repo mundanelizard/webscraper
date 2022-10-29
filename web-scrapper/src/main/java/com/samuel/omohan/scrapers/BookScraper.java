@@ -35,6 +35,7 @@ public class BookScraper implements Debug {
 
     public void start() throws InterruptedException {
         while(hasNext()) {
+
             var next = getNext();
 
             if (next == null) {
@@ -51,6 +52,8 @@ public class BookScraper implements Debug {
 //                e.printStackTrace();
             }
         }
+
+        System.out.println("Database ");
     }
 
     private boolean hasNext() {
