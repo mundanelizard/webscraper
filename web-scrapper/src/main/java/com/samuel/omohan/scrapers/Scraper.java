@@ -1,11 +1,18 @@
 package com.samuel.omohan.scrapers;
 
 import com.samuel.omohan.datastore.Book;
+import com.samuel.omohan.datastore.BookListing;
+import com.samuel.omohan.datastore.Database;
 
 import java.util.*;
 
 public abstract class Scraper implements Runnable {
     private final String id = UUID.randomUUID().toString();
+    private final String PROVIDER_ID;
+
+    Scraper(String id) {
+        PROVIDER_ID = id;
+    }
 
     private List<Book> tasks;
 
@@ -55,8 +62,35 @@ public abstract class Scraper implements Runnable {
         lastScrapeTime = System.currentTimeMillis();
     }
 
-    // scrapes only when the book hasn't been scraped or is more than 1 day old.
-    abstract void scrape(Book book);
+    void scrape(Book book) {
+        var params = new Database.Parameter[]{
+                new Database.Parameter("book_id", book.getId()),
+                new Database.Parameter("provider", PROVIDER_ID),
+        };
+
+        var items = Database.getItemsWhere(
+                BookListing.class,
+                "t.book_id = %s AND t.provider = %s",
+                params);
+
+//        updateAt - createdAt
+
+        // scrapes only when the book hasn't been scraped or is more than 1 day old.
+        // perform proper date calculations
+        if (items.size() != 0 && items.get(0).getUpdatedAt() - System.currentTimeMillis() < 5000) {
+            return;
+        }
+
+        var listing = getBook(book.getTitle());
+
+        if (items.size() != 0) {
+            listing.setId(items.get(0).getId());
+        }
+
+        Database.createOrUpdate(listing);
+    }
+
+    abstract public BookListing getBook(String title);
 
     // create run and start - make them mirrors
 }

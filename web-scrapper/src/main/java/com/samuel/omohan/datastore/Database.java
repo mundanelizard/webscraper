@@ -54,7 +54,7 @@ public class Database {
         final String key;
         final Object value;
 
-        public Parameter(String key, String value) {
+        public Parameter(String key, Object value) {
             this.key = key;
             this.value = value;
         }

@@ -35,7 +35,14 @@ public class ScraperManager {
                 }
 
                 // if the number of cores on the computer has been exhausted skip the scraper
-                if (Runtime.getRuntime().availableProcessors() - 1 == Thread.activeCount()) {
+                var processCount = Runtime.getRuntime().availableProcessors();
+                var activeThreads = Thread.activeCount();
+
+                if (processCount == 1 && activeThreads > 2) {
+                    continue;
+                }
+
+                if (processCount > 1 && activeThreads > processCount) {
                     continue;
                 }
 

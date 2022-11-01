@@ -4,6 +4,7 @@ package com.samuel.omohan.datastore;
 
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="book_listings")
@@ -25,6 +26,12 @@ public class BookListing {
 
     @Column(name="url", nullable = false)
     private String url;
+
+    @Column(name="createdAt", nullable = false)
+    private Date createdAt;
+
+    @Column(name="updatedAt", nullable = false)
+    private Date updatedAt;
 
     public int getId() {
         return id;
@@ -64,5 +71,21 @@ public class BookListing {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }
