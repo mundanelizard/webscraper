@@ -1,10 +1,11 @@
-package com.samuel.omohan.scrapers;
+package com.project.scrapers;
 
-import com.samuel.omohan.datastore.Book;
+import com.project.Debug;
+import com.project.datastore.Book;
 
 import java.util.*;
 
-public class ScraperManager {
+public class ScraperManager implements Debug {
     private final List<Scraper> scrapers;
     private final List<Book> books;
 
@@ -14,7 +15,7 @@ public class ScraperManager {
     }
 
     public void addScraper(Scraper scraper) {
-        if (scrapers.stream().anyMatch(s -> Objects.equals(s.getId(), scraper.getId())))
+        if (scrapers.stream().anyMatch(s -> Objects.equals(s.PROVIDER_ID, scraper.PROVIDER_ID)))
             return;
 
         scraper.setTasks(books);
@@ -22,6 +23,7 @@ public class ScraperManager {
     }
 
     public void start() throws InterruptedException {
+        info("Starting scraper");
         while (!Thread.interrupted()) {
             for (var scraper : scrapers) {
                 // if it is still scraping skip over the item.
@@ -50,8 +52,10 @@ public class ScraperManager {
             }
 
             // waits for 10000 seconds before checking the application status.
+            debug("Main thread is going to sleep.");
             Thread.sleep(10000);
         }
+        info("Stopping Scraper");
     }
 
 }

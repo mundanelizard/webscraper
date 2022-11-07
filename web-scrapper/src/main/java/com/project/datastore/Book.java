@@ -1,4 +1,4 @@
-package com.samuel.omohan.datastore;
+package com.project.datastore;
 
 import javax.persistence.*;
 
@@ -63,6 +63,11 @@ public class Book {
 
     public void setLanguageId(Long languageId) {
         this.languageId = languageId;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }
 

@@ -1,31 +1,31 @@
-package com.samuel.omohan.scrapers;
+package com.project.scrapers;
 
-import com.samuel.omohan.datastore.Book;
-import com.samuel.omohan.datastore.BookListing;
-import com.samuel.omohan.datastore.Database;
+import com.project.datastore.BookListing;
+import com.project.datastore.Database;
+import com.project.Debug;
+import com.project.datastore.Book;
 
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 import java.util.*;
 
-public abstract class Scraper implements Runnable {
-    private final String id = UUID.randomUUID().toString();
-    private final String PROVIDER_ID;
+public abstract class Scraper implements Runnable, Debug {
+    public final String PROVIDER_ID;
 
     Scraper(String id) {
-        PROVIDER_ID = id;
+        PROVIDER_ID = id.toUpperCase();
     }
 
     private List<Book> tasks;
 
     private int index;
-    private long lastScrapeTime = System.currentTimeMillis();
+    private long lastScrapeTime = 0;
 
     public void setTasks(List<Book> books) {
         this.tasks = books;
     }
 
-    public String getId() {
-        return id;
-    }
+
     public int getProgress() {
         if (tasks == null) return 0;
         return (index + 1) / tasks.size();
@@ -35,11 +35,12 @@ public abstract class Scraper implements Runnable {
     }
 
     public void run() {
+        debug(PROVIDER_ID + " is scraping in the background");
         lastScrapeTime = -1;
         index = 0;
 
         if(tasks == null) {
-            throw new IllegalStateException(getClass().getName() + " - " + getId() + " is missing a task list");
+            throw new IllegalStateException(getClass().getName() + " - " + PROVIDER_ID + " is missing a task list");
         }
 
         for (var book : tasks) {
@@ -50,6 +51,7 @@ public abstract class Scraper implements Runnable {
             if (Thread.interrupted()) break;
 
             try {
+                debug(PROVIDER_ID + " is handing over execution for 2 seconds.");
                 wait(2000);
             } catch (InterruptedException ie) {
                 ie.printStackTrace();
@@ -60,9 +62,12 @@ public abstract class Scraper implements Runnable {
         }
 
         lastScrapeTime = System.currentTimeMillis();
+        debug(PROVIDER_ID + " is done scraping in the background.");
     }
 
     void scrape(Book book) {
+        debug(this.PROVIDER_ID + " is scraping " + book.getTitle());
+
         var params = new Database.Parameter[]{
                 new Database.Parameter("book_id", book.getId()),
                 new Database.Parameter("provider", PROVIDER_ID),
@@ -70,18 +75,27 @@ public abstract class Scraper implements Runnable {
 
         var items = Database.getItemsWhere(
                 BookListing.class,
-                "t.book_id = %s AND t.provider = %s",
+                "t.book_id = :book_id AND t.provider = :provider",
                 params);
 
-//        updateAt - createdAt
-
-        // scrapes only when the book hasn't been scraped or is more than 1 day old.
-        // perform proper date calculations
-        if (items.size() != 0 && items.get(0).getUpdatedAt() - System.currentTimeMillis() < 5000) {
-            return;
+        if (items.size() != 0) {
+            // scrape only after 1 day
+            var seconds = items.get(0).getUpdatedAt().toEpochSecond(LocalTime.now(), ZoneOffset.UTC);
+            var current = System.currentTimeMillis() / 1000;
+            // TODO: Make a proper calculation.
+            if (seconds < current) {
+                debug(this.PROVIDER_ID + " has recently scraped" + book.getTitle());
+                return;
+            }
         }
 
         var listing = getBook(book.getTitle());
+
+        // book not found.
+        if (listing == null) {
+            debug(this.PROVIDER_ID + " couldn't find " + book.getTitle());
+            return;
+        }
 
         if (items.size() != 0) {
             listing.setId(items.get(0).getId());
@@ -91,6 +105,4 @@ public abstract class Scraper implements Runnable {
     }
 
     abstract public BookListing getBook(String title);
-
-    // create run and start - make them mirrors
 }

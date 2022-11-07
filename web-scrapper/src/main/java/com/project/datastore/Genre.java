@@ -1,4 +1,4 @@
-package com.samuel.omohan.datastore;
+package com.project.datastore;
 
 import javax.persistence.*;
 

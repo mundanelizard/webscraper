@@ -1,11 +1,11 @@
-package com.samuel.omohan.datastore;
+package com.project.datastore;
 
 import javax.persistence.*;
 
 
 @Entity
-@Table(name="books_genres")
-public class BooksGenres {
+@Table(name="books_authors")
+public class BooksAuthors {
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -16,8 +16,8 @@ public class BooksGenres {
     @Column(name = "book_id", nullable = false)
     private Long bookId;
 
-    @Column(name = "genre_id", nullable = false)
-    private Long genreId;
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
 
     public Long getId() {
         return id;
@@ -35,11 +35,11 @@ public class BooksGenres {
         this.bookId = bookId;
     }
 
-    public Long getGenreId() {
-        return genreId;
+    public Long getAuthorId() {
+        return authorId;
     }
 
-    public void setGenreId(Long genreId) {
-        this.genreId = genreId;
+    public void setAuthorId(Long genreId) {
+        this.authorId = genreId;
     }
 }

@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.samuel.omohan</groupId>
+  <groupId>com.project</groupId>
   <artifactId>web-scrapper</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>web-scraper</name>
   <!-- FIXME change it to the project's website -->
-  <url>https://www.mundanelizard.com</url>
+  <url>https://www.project.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -61,7 +61,7 @@
           <artifactId>exec-maven-plugin</artifactId>
           <version>1.4.0</version>
           <configuration>
-            <mainClass>com.samuel.omohan.App</mainClass>
+            <mainClass>com.project.App</mainClass>
           </configuration>
         </plugin>
         <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->

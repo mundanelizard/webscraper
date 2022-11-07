@@ -1,10 +1,10 @@
-package com.samuel.omohan;
+package com.project;
 
 public interface Debug {
     /**
      * true to debug and show all console output.
      */
-    boolean DEBUG = false;
+    boolean DEBUG = true;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -15,6 +15,14 @@ public interface Debug {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
+
+    default void debug(String input) {
+        if(DEBUG) System.out.println(input);
+    }
+
+    default void info(String input) {
+        System.out.println(input);
+    }
 }
 
 /**

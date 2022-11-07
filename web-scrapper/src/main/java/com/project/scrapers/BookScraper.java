@@ -1,7 +1,7 @@
-package com.samuel.omohan.scrapers;
+package com.project.scrapers;
 
-import com.samuel.omohan.Debug;
-import com.samuel.omohan.datastore.*;
+import com.project.Debug;
+import com.project.datastore.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,7 +35,6 @@ public class BookScraper implements Debug {
 
     public void start() throws InterruptedException {
         while(hasNext()) {
-
             var next = getNext();
 
             if (next == null) {
@@ -48,12 +47,9 @@ public class BookScraper implements Debug {
             } catch (InterruptedException e) {
                 throw e;
             } catch (Exception e) {
-                System.out.println(e.getMessage());
-//                e.printStackTrace();
+                info(e.getMessage());
             }
         }
-
-        System.out.println("Database ");
     }
 
     private boolean hasNext() {
@@ -90,13 +86,13 @@ public class BookScraper implements Debug {
 
             return link.getAttribute("href");
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            debug(e.getMessage());
             return null;
         }
     }
 
     private void scrape(String url) throws Exception {
-        System.out.println(url);
+        debug(url);
         scraper.get(url);
 
         // create book
@@ -108,7 +104,7 @@ public class BookScraper implements Debug {
         // create author-book relationships
         createAuthorBookRelationship(book.getId(), getAuthors());
 
-        System.out.println("Successfully scraped " + book.getTitle());
+        debug("Successfully scraped " + book.getTitle());
     }
 
     private void createBookGenreRelationship(Long bookId, List<Long> genreIds) {

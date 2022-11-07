@@ -1,10 +1,11 @@
-package com.samuel.omohan.datastore;
+package com.project.datastore;
 
 // name logo url
 
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name="book_listings")
@@ -13,7 +14,10 @@ public class BookListing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", unique = true)
-    private int id;
+    private long id;
+
+    @Column(name="book_id", nullable = false)
+    private long bookId;
 
     @Column(name="name", nullable = false)
     private String name;
@@ -27,17 +31,17 @@ public class BookListing {
     @Column(name="url", nullable = false)
     private String url;
 
-    @Column(name="createdAt", nullable = false)
-    private Date createdAt;
+    @Column(name="createdAt", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDate createdAt;
 
-    @Column(name="updatedAt", nullable = false)
-    private Date updatedAt;
+    @Column(name="updatedAt", nullable = false, columnDefinition = "TIMESTAMP")
+    private LocalDate updatedAt;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -73,19 +77,27 @@ public class BookListing {
         this.url = url;
     }
 
-    public String getCreatedAt() {
+    public LocalDate getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(LocalDate createdAt) {
         this.createdAt = createdAt;
     }
 
-    public String getUpdatedAt() {
+    public LocalDate getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(String updatedAt) {
+    public void setUpdatedAt(LocalDate updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(long bookId) {
+        this.bookId = bookId;
     }
 }

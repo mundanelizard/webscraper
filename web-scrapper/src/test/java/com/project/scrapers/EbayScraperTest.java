@@ -1,4 +1,4 @@
-package com.samuel.omohan.scrapers;
+package com.project.scrapers;
 
 import org.junit.jupiter.api.*;
 
