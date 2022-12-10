@@ -96,7 +96,7 @@ public class BookScraper implements Debug {
         scraper.get(url);
 
         // create book
-        var book = getBook(getLanguages());
+        var book = getBook();
 
         // create book-genre relationships
         createBookGenreRelationship(book.getId(), getGenres());
@@ -125,7 +125,7 @@ public class BookScraper implements Debug {
         }
     }
 
-    private Book getBook(Long languageId) throws Exception {
+    private Book getBook() throws Exception {
         var book = new Book();
 
         String title = scraper.findElement(By.cssSelector("#productTitle")).getText().toLowerCase();
@@ -139,93 +139,26 @@ public class BookScraper implements Debug {
         );
 
         if (result.size() > 0) {
-            throw new Exception("Book - " + title + " already exists.");
+            throw new Exception("Skipping Book: " + title + " - already exists.");
         }
 
-        List<String> descriptions = scraper
-                .findElements(
-                        By.cssSelector("#editorialReviews_feature_div > div.a-section.a-spacing-small.a-padding-base")
-                )
-                .stream()
-                .map(e -> e.getAttribute("innerHTML"))
-                .collect(Collectors.toList());
 
-        if (descriptions.size() == 0) {
-            throw new Exception("Skipping " + title);
+        var image = getImage();
+        var description = getDescription(title);
+        var isbn = getIsbn();
+
+        if (isbn == null) {
+            throw new Exception("Skipping Book: " + title + " - doesn't have an ISBN-10");
         }
 
-        var description = descriptions.get(0);
-
-        List<String> images = scraper.findElements(By.cssSelector("#ebooksImgBlkFront"))
-                .stream()
-                .map(e -> e.getAttribute("src"))
-                .collect(Collectors.toList());
-
-        if (images.size() == 0) {
-            images = scraper
-                    .findElements(By.cssSelector("#imgBlkFront"))
-                    .stream()
-                    .map(e -> e.getAttribute("src"))
-                    .collect(Collectors.toList());
-        }
-
-        var image = "";
-
-        if (images.size() > 0) {
-            image = images.get(0);
-        }
-
-        book.setLanguageId(languageId);
         book.setDescription(description);
         book.setTitle(title);
         book.setImage(image);
+        book.setIsbn(isbn);
 
         Database.createOrUpdate(book);
 
         return book;
-    }
-
-    private Long getLanguages() {
-        List<String> languages = scraper
-                .findElements(By.cssSelector("#detailBullets_feature_div > ul > li:nth-child(2) > span > span:nth-child(2)"))
-                .stream()
-                .map(WebElement::getText)
-                .collect(Collectors.toList());
-
-        if (languages.size() == 0) {
-            languages = new ArrayList<>();
-            languages.add("Unknown");
-        }
-
-        var languagesIds = new ArrayList<Long>();
-
-
-        for (var languageName : languages) {
-            languageName = languageName.toLowerCase();
-
-            var params = new Database.Parameter[]{ new Database.Parameter("name", languageName)};
-
-            var result = Database.getItemsWhere(
-                    Language.class,
-                    "t.name = :name",
-                    params
-            );
-
-            if (result.size() >= 1) {
-                languagesIds.add(result.get(0).getId());
-                break;
-            }
-
-            var language = new Language();
-            language.setName(languageName);
-
-            Database.createOrUpdate(language);
-
-            languagesIds.add(language.getId());
-            break;
-        }
-
-        return languagesIds.get(0);
     }
 
     private List<Long> getAuthors() {
@@ -312,6 +245,56 @@ public class BookScraper implements Debug {
         }
 
         return genreIds;
+    }
+
+    private String getImage() {
+        List<String> images = scraper.findElements(By.cssSelector("#ebooksImgBlkFront"))
+                .stream()
+                .map(e -> e.getAttribute("src"))
+                .collect(Collectors.toList());
+
+        if (images.size() == 0) {
+            images = scraper
+                    .findElements(By.cssSelector("#imgBlkFront"))
+                    .stream()
+                    .map(e -> e.getAttribute("src"))
+                    .collect(Collectors.toList());
+        }
+
+        var image = "";
+
+        if (images.size() > 0) {
+            image = images.get(0);
+        }
+
+        return image;
+    }
+
+    private String getDescription(String title) throws Exception {
+        List<String> descriptions = scraper
+                .findElements(
+                        By.cssSelector("#editorialReviews_feature_div > div.a-section.a-spacing-small.a-padding-base")
+                )
+                .stream()
+                .map(e -> e.getAttribute("innerHTML"))
+                .collect(Collectors.toList());
+
+        if (descriptions.size() == 0) {
+            throw new Exception("Skipping Book: " + title + " - book doesn't have a description.");
+        }
+
+        return descriptions.get(0);
+    }
+
+    private String getIsbn() {
+        try {
+        return scraper
+                .findElement(
+                        By.cssSelector("#detailBullets_feature_div > ul > li:nth-child(4) > span > span:nth-child(2)"))
+                .getText();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }
 

@@ -18,8 +18,8 @@ public class Book {
     @Column(name="description", nullable = false)
     private String description;
 
-    @Column(name="language_id", nullable = false)
-    private Long languageId;
+    @Column(name="isbn", nullable = false)
+    private String isbn;
 
     @Column(name="image", nullable = false)
     private String image;
@@ -57,12 +57,12 @@ public class Book {
         this.description = description;
     }
 
-    public Long getLanguageId() {
-        return languageId;
+    public String getIsbn() {
+        return isbn;
     }
 
-    public void setLanguageId(Long languageId) {
-        this.languageId = languageId;
+    public void setIsbn(String isbn) {
+        this.isbn = isbn;
     }
 
     @Override

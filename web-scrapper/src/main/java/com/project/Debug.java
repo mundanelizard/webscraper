@@ -31,7 +31,6 @@ public interface Debug {
  * - ID
  * - Model
  * - Description
- * -
  *
  * Instance
  * - ID
@@ -44,5 +43,4 @@ public interface Debug {
  * - Price
  * - Url
  * - Provider
- *
  */

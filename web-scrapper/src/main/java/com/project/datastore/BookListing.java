@@ -4,13 +4,14 @@ package com.project.datastore;
 
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity
 @Table(name="book_listings")
 public class BookListing {
     private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id", unique = true)
@@ -19,23 +20,20 @@ public class BookListing {
     @Column(name="book_id", nullable = false)
     private long bookId;
 
-    @Column(name="name", nullable = false)
-    private String name;
-
-    @Column(name="key", nullable = false)
-    private String key;
-
-    @Column(name="logo", nullable = false)
-    private String logo;
+    @Column(name="provider", nullable = false)
+    private String provider;
 
     @Column(name="url", nullable = false)
     private String url;
 
-    @Column(name="createdAt", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDate createdAt;
+    @Column(name="price", nullable = false)
+    private String price;
 
-    @Column(name="updatedAt", nullable = false, columnDefinition = "TIMESTAMP")
-    private LocalDate updatedAt;
+    @Column(name="created_at", nullable = false, columnDefinition = "TIMESTAMP")
+    private Date createdAt;
+
+    @Column(name="updated_at", nullable = false, columnDefinition = "TIMESTAMP")
+    private Date updatedAt;
 
     public long getId() {
         return id;
@@ -45,28 +43,12 @@ public class BookListing {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getProvider() {
+        return provider;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public void setKey(String key) {
-        this.key = key;
-    }
-
-    public String getLogo() {
-        return logo;
-    }
-
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setProvider(String key) {
+        this.provider = key;
     }
 
     public String getUrl() {
@@ -77,19 +59,19 @@ public class BookListing {
         this.url = url;
     }
 
-    public LocalDate getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -99,5 +81,9 @@ public class BookListing {
 
     public void setBookId(long bookId) {
         this.bookId = bookId;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }
