@@ -2,10 +2,7 @@ package com.project;
 
 
 import com.project.datastore.Database;
-import com.project.scrapers.AmazonScraper;
-import com.project.scrapers.BookScraper;
-import com.project.scrapers.Scraper;
-import com.project.scrapers.ScraperManager;
+import com.project.scrapers.*;
 import com.project.datastore.Book;
 
 import java.sql.Array;
@@ -19,7 +16,8 @@ public class App
 {
     public static void main (String[] args) throws InterruptedException {
         var scrapers = new ArrayList<Scraper>();
-        scrapers.add(new AmazonScraper());
+//        scrapers.add(new AmazonScraper());
+        scrapers.add(new WaterstonesScraper());
 
         var books = Database.getItems(Book.class);
 
