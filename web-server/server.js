@@ -1,10 +1,33 @@
 const http = require("http");
 const { URLSearchParams } = require("url");
+const path = require("path");
+const fs = require("fs");
+const mime = require("mime");
 
-const servers = [];
+let servers = [];
 
-function defaultHanlder(req, res) {
+function defaultHandler(req, res) {
   res.send("not found thank you");
+}
+
+function staticHandler(req, res, basePath) {
+  let url;
+  if (req.url === "/") url = path.join(basePath, "index.html");
+  else url = path.join(basePath, path.normalize(req.url));
+
+  fs.readFile(url, function (err, data) {
+    if (err) {
+      res.writeHead(404);
+      res.end(JSON.stringify(err));
+      return;
+    }
+
+    const mimeType = mime.getType(url);
+    res.writeHead(200, {
+      "Content-Type": mimeType,
+    });
+    res.end(data);
+  });
 }
 
 /**
@@ -54,10 +77,16 @@ function matchRoute(path, location, exact = true) {
  * @returns a tiny server object. 
  */
 function server() {
-  const bindings = { default: defaultHanlder };
+  const bindings = { default: defaultHandler };
   const server = http.createServer();
+  servers.push(server);
 
   server.on("request", (request, response) => {
+    response.closed = false;
+    response.send = (data, statusCode = 200) => send(data, statusCode);
+    response.sendFile = (path) => sendFile(path);
+
+
     const { url } = request;
 
     // parses incoming data into something usable.
@@ -90,12 +119,13 @@ function server() {
     response.setHeader("Content-Type", "application/json");
     response.setHeader("X-Powered-By", "tiny-server");
 
-    const send = (data, statusCode = 200) => {
+    const send = (data, statusCode) => {
+      response.closed = true;
       response.statusCode = statusCode;
 
       // response.end(data) can be replaced with
       // response.write(data) then response.end()
-      // anyone you fancy works, but I think this takes less lines.
+      // anyone you fancy works, but I think this takes fewer lines.
       if (!data) {
         response.end();
       } else if (typeof data === "string") {
@@ -105,26 +135,74 @@ function server() {
       }
     };
 
+    const sendFile = (url) => {
+      fs.readFile(url, function (err, data) {
+        if (err) {
+          response.writeHead(404);
+          response.end(JSON.stringify(err));
+          return;
+        }
+
+        const mimeType = mime.getType(url);
+        response.writeHead(200, {
+          "Content-Type": mimeType,
+        });
+        response.end(data);
+      });
+    }
+
     // adds extra data to the request and response object
     request.path = path;
     request.query = query;
-    response.send = send;
 
     // setting handler to 'notfound' route by default.
     let handler = bindings["default"];
 
     // checks if path matches any bindings
     for (const route in bindings) {
-      request.params = matchRoute(route, path);
+      const params = matchRoute(route, path);
 
-      if (request.params) {
+      if (params) {
+        request.params = params;
         handler = bindings[route];
         break;
       }
     }
 
     // handles the incoming request
-    handler(request, response);
+    const result = handler(request, response);
+
+    if (!result.then) {
+        return;
+    }
+
+    // handles the edge case when the handler is async
+    result
+        .then(function(result) {
+          if (response.closed) return;
+
+          if (result instanceof AsyncHandlerResult) {
+            response.send(result.data, result.status);
+            return;
+          }
+
+          const statusCode = 200;
+          response.send(result, statusCode)
+        })
+        .catch(function(error) {
+          if (error && error.statusCode === 500) {
+            console.log("AsyncHandlerError: ", error.message, error);
+          }
+
+          if (response.closed) return;
+
+          if (error instanceof AsyncHandlerError) {
+            response.send(error.data, error.statusCode)
+            return;
+          }
+
+          console.log("ServerError: ", error);
+        })
   })
 
   // handles all server errors by logging them out to the console.
@@ -132,6 +210,19 @@ function server() {
   server.on("error", (err) => {
     console.log(err.stack);
   });
+
+  const closeServer = (cb) => {
+    server.close(cb);
+    servers = servers.filter(s => server !== s);
+  }
+
+  const serveStatic = (basePath) => {
+    if (!basePath || typeof basePath !== 'string') {
+      throw new Error("'server.serve' expected a 'basedPath' of type 'string' but instead received " + typeof basePath)
+    }
+
+    bindings["default"] = (req, res)  => staticHandler(req, res, basePath);
+  }
 
   // adds new route to bindings.
   const route = (path, func) => (bindings[path.replace(/^\/|\/$/g, "")] = func);
@@ -141,14 +232,34 @@ function server() {
   return {
     route,
     listen,
-    default: (handler) => {bindings["default"] = handler}
+    nativeServer: server,
+    default: (handler) => {bindings["default"] = handler},
+    static: serveStatic,
+    close: closeServer,
   };
 }
 
-server.decodePath = decodePath
-server.defaultHanlder = defaultHanlder
-server.matchRoute = matchRoute
-server.servers = servers;
+class AsyncHandlerError extends Error {
+  constructor(message, data, statusCode) {
+    super(message);
+    this.data = data;
+    this.statusCode = statusCode;
+  }
+}
+
+class AsyncHandlerResult {
+  constructor(data, statusCode) {
+    this.data = data;
+    this.statusCode = statusCode;
+  }
+}
+
+server.decodePath = decodePath;
+server.defaultHanlder = defaultHandler;
+server.matchRoute = matchRoute;
+server.getServer = () => [...servers];
+server.AsyncHandlerError = AsyncHandlerError;
+server.AsyncHandlerResult = AsyncHandlerResult;
 
 // terminates all running server before exiting.
 process.on("beforeExit", () => {
