@@ -3,15 +3,18 @@ const { AsyncHandlerError } = require("./server");
 const {
   getBooks,
   getBook,
-  searchCameras, getAuthors, getBooksByAuthor, getGenres, getBooksByGenre,
+  getAuthors,
+  getBooksByAuthor,
+  getGenres,
+  getBooksByGenre,
 } = require("./controllers");
 const path = require("path");
-const app = server();
+const app = server({ debug: true });
 
 app.static(path.join(__dirname, "/public/"));
 
 app.route("/api/books", async (req) => {
-  const batch = parseInt(req.query.batch) || 0;
+  const batch = parseInt(req.query.batch) || 1;
   const size = parseInt(req.query.step) || 20;
   const search = req.query.search;
 
@@ -28,7 +31,7 @@ app.route("/api/books", async (req) => {
   return books;
 });
 
-app.route("/api/books/:isbn", async (req) => {
+app.route("/api/books/:id", async (req) => {
   const id = req.params.id;
 
   const book = await getBook(id);
@@ -100,6 +103,4 @@ app.route("/api/genres/:id/books", async(req) => {
 })
 
 
-app.listen(8000, () => {
-  console.log("Listening at port 8000");
-});
+app.listen(8000, () => console.log("Listening at port 8000"));
