@@ -4,8 +4,8 @@ const database = require("../database")
 const { expect } = require("chai");
 
 
-decribe("controllers", () => {
-    afterAll(() => {
+describe("controllers", () => {
+    after(() => {
         // kills the database after all the tests.
         database.end();
     })

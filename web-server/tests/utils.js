@@ -11,7 +11,7 @@ class ServerSimulator {
     data = null;
     endpoint = null;
 
-    query = {};
+    _query = {};
 
     constructor(server) {
         this.server = server;
@@ -24,7 +24,7 @@ class ServerSimulator {
     }
 
     query(query) {
-        this.query = query;
+        this._query = query;
         return this;
     }
 
@@ -47,7 +47,7 @@ class ServerSimulator {
                 'Accept': 'application/json',
             },
             body: data,
-            query: this.query,
+            query: this._query,
         });
 
         const response = httpMock.createResponse();
@@ -62,21 +62,6 @@ class ServerSimulator {
             body: rawData,
             headers: response._getHeaders(),
         };
-    }
-
-    _drainStream(stream) {
-        return new Promise((resolve, reject) => {
-            const chunks = [];
-            stream.on('data', (chunk) => {
-                chunks.push(Buffer.from(chunk))
-                console.log("Receiving the data", chunk)
-            });
-            stream.on('error', (err) => reject(err));
-            stream.on('end', () => {
-                console.log("Ending the stream");
-                resolve(Buffer.concat(chunks).toString('utf8'))
-            });
-        })
     }
 }
 
