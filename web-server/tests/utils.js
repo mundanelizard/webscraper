@@ -67,5 +67,5 @@ class ServerSimulator {
 
 module.exports = {
     ServerSimulator,
-    request: (endpoint) => new ServerSimulator(endpoint),
+    request: (server) => new ServerSimulator(server),
 };
