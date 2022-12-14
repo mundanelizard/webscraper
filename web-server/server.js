@@ -87,7 +87,6 @@ function server(options) {
     response.send = (data, statusCode = 200) => send(data, statusCode);
     response.sendFile = (path) => sendFile(path);
 
-
     const { url } = request;
 
     // parses incoming data into something usable.

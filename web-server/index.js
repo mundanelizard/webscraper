@@ -103,4 +103,8 @@ app.route("/api/genres/:id/books", async(req) => {
 })
 
 
-app.listen(8000, () => console.log("Listening at port 8000"));
+if (require.main.filename === __filename) {
+  app.listen(8000, () => console.log("Listening at port 8000"));
+}
+
+module.exports = app;
