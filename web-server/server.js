@@ -79,7 +79,7 @@ function matchRoute(path, location, exact = true) {
 function server(options) {
   const bindings = { default: defaultHandler };
   const server = http.createServer();
-  const debug = options.debug;
+  let debug = options.debug;
   servers.push(server);
 
   server.on("request", (request, response) => {
@@ -240,6 +240,7 @@ function server(options) {
     default: (handler) => {bindings["default"] = handler},
     static: serveStatic,
     close: closeServer,
+    setDebug: (d) => debug = d,
   };
 }
 

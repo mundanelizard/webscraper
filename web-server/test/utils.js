@@ -19,7 +19,11 @@ class ServerSimulator {
 
     route(endpoint) {
         this.endpoint = endpoint;
-        this.setData = (data) => this.data = data;
+        return this;
+    }
+
+    setBody(data) {
+        this.data = data;
         return this;
     }
 
@@ -59,7 +63,7 @@ class ServerSimulator {
         return {
             status: response._getStatusMessage(),
             statusCode: response._getStatusCode(),
-            body: rawData,
+            body: JSON.parse(rawData),
             headers: response._getHeaders(),
         };
     }

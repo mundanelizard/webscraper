@@ -41,9 +41,17 @@ async function getBooks(batch, size, search) {
   const [{ count }] = await asyncQuery(`SELECT COUNT(*) as count FROM books ${interjection}`);
 
   const offset = (batch - 1) * size;
+  const totalBatch = Math.ceil(count / size);
 
   if (offset >= count) {
-    return [];
+    return {
+      data: [],
+      total: count,
+      batch: batch,
+      nextBatch: -1,
+      totalBatch: totalBatch,
+      size: size,
+    };
   }
 
   const query = `SELECT id, title, image, isbn FROM books ${interjection}`
@@ -52,7 +60,6 @@ async function getBooks(batch, size, search) {
       + ` GROUP BY books.id`
 
   const data = await asyncQuery(query);
-  const totalBatch = Math.ceil(count / size);
 
   return {
     data: data,
@@ -109,9 +116,14 @@ async function getBooksByGenre(id) {
   const genreQuery = `SELECT * FROM genres WHERE id = ${database.escape(id)}`;
   const [genre] = await asyncQuery(genreQuery);
 
+  if (!genre) {
+    return null;
+  }
+
   const booksQuery = `SELECT books.id as id, title, image, isbn FROM books_genres`
       + ` INNER JOIN books ON books.id = book_id`
       + ` WHERE genre_id = ${database.escape(id)}`
+
   genre.books = await asyncQuery(booksQuery);
 
   return genre;
@@ -123,8 +135,12 @@ function getAuthors() {
 }
 
 async function getBooksByAuthor(id) {
-  const authorQuery = `SELECT * FROM genres WHERE id = ${database.escape(id)}`;
+  const authorQuery = `SELECT * FROM authors WHERE id = ${database.escape(id)}`;
   const [author] = await asyncQuery(authorQuery);
+
+  if (!author) {
+    return null;
+  }
 
   const booksQuery = `SELECT books.id as id, title, image, isbn FROM books_authors`
       + ` INNER JOIN books ON books.id = book_id`
