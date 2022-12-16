@@ -11,7 +11,7 @@ const SearchComponent = {
             totalBatch: 0,
 
             loading: false,
-            size: 20,
+            size: 10,
             batch: 1,
         }
     },
