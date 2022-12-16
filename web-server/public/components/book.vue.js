@@ -36,8 +36,6 @@ const BookComponent = {
 
                     this.formattedGenres = result.genres.map(({ title }) => title).join(", ");
                     this.formattedAuthors = result.authors.map(({ name }) => name).join(", ");
-
-                    console.log(this.prices);
                 })
         },
         async handleSearch() {
@@ -49,9 +47,9 @@ const BookComponent = {
         this.loadBook()
     },
     template: `
-    <div>
-        <header>
-            <h1 class="logo"><a href="/">Book Checker</a></h1>
+    <div class="details">
+        <header class="header">
+            <div class="logo"><a href="/">Book Comparison</a></div>
             <form @submit.prevent="handleSearch">
                 <input 
                     v-model="search"  
@@ -59,40 +57,42 @@ const BookComponent = {
                     />
                 <button>Search</button>
             </form>
-            <nav>
-                <h3>ISBN: {{isbn}}</h3>
-            </nav>
         </header>
         
         <main>
-            <div>
+            <section class="image">
                 <img :src="image" height="400" width="400" />
-                <h2>{{title}}</h2>
-                <div>
-                    <h4>Comparisons</h4>
-                    <div>
-                        <div v-for="price in prices">
-                            <a :href="price.url" target="_blank">
-                               <div>{{price.provider}}</div>
-                               <div><em>{{price.price}}</em></div>
-                               <i>{{price.updated_at}}</i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </section>
             
-            <section>
-                <article v-html="description"></article>
-                <div>
-                   <h3>Genres</h3>
+            <section class="info">
+                <h1>{{title}}</h1>
+                <article class="description" v-html="description"></article>
+                <div class="table">
+                   <b>Genres: </b>
                    <span >{{formattedGenres}}</span>
                 </div>
-                <div>
-                    <h3>Authors</h3>
+                <div class="table">
+                    <b>Authors: </b>
                    <span>{{formattedAuthors}}</span>
                 </div>
+                <div class="table">
+                    <b>ISBN: </b>
+                   <span>{{isbn}}</span>
+                </div>
             </section>
+            
+            <section class="comparison">
+                <div>
+                    <div class="price" v-for="price in prices">
+                        <a :href="price.url" target="_blank">
+                           <div class="provider">{{price.provider}}</div>
+                           <div class="cost"><em>{{price.price}}</em></div>
+                           <i class="time">{{new Date(price.updated_at).toLocaleString()}}</i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+          
         </main>
     </div>
     `

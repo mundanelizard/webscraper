@@ -51,8 +51,8 @@ const SearchComponent = {
     },
     template: `
     <div class="search">
-        <header>
-            <h1 class="logo"><a href="/">Book Checker</a></h1>
+        <header class="header">
+            <div class="logo"><a href="/">Book Comparison</a></div>
             <form @submit.prevent="handleSearch">
                 <input 
                     v-model="search"  

@@ -36,7 +36,7 @@ const HomeComponent = {
     },
     template: `
     <div class="home">
-      <h1 class="logo"><a href="/">Book Checker</a></h1>
+      <h1 class="logo"><a href="/">Book Comparison</a></h1>
       <form @submit.prevent="handleSearch">
         <input 
             v-model="search"  

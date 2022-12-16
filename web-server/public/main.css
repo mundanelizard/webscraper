@@ -75,24 +75,24 @@ body {
   padding: 1rem;
 }
 
-.search .logo {
+.header .logo {
   font-size: 1.2rem;
   margin: 0;
 }
 
-.search header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin: 1rem 0;
 }
 
-.search header form {
+.header form {
   display: flex;
   flex-wrap: wrap;
 }
 
-.search header form input {
+.header form input {
   height: 2.5rem;
   width: 16rem;
   border: 1px solid lightgray;
@@ -102,12 +102,12 @@ body {
   font-family: inherit;
 }
 
-.search header form input:focus {
+.header form input:focus {
   outline: none;
   border: 1px solid gray;
 }
 
-.search header form button {
+.header form button {
   border: 1px solid lightgray;
   cursor: pointer;
   width: 6rem;
@@ -184,4 +184,99 @@ body {
   margin-right: .2rem;
   padding: .5rem 1rem;
   cursor: pointer;
+}
+
+.details {
+  max-width: 86rem;
+  margin: 0 auto;
+  /*background: aliceblue;*/
+  padding: 1rem;
+}
+
+.details main {
+  display: flex;
+  margin-top: 4rem;
+}
+
+.details section:nth-child(1) {
+  /*background: maroon;*/
+  width: 30%;
+}
+
+.details .image img {
+  width: 100%;
+  height: auto;
+}
+
+.details section:nth-child(2) {
+  /*background: violet;*/
+  width: 40%;
+  padding: 0 1rem;
+}
+
+.details section:nth-child(3) {
+  /*background: orange;*/
+  width: 30%;
+}
+
+.details h1 {
+  font-size: 1.4rem;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.details .info {
+  font-size: .8rem;
+}
+
+.details .description {
+  margin-bottom: 1rem;
+}
+
+.details .description h1 {
+  font-size: 1.1rem;
+}
+
+.details .description h2 {
+  font-size: 1rem;
+}
+
+.details .description h3 {
+  font-size: .9rem;
+}
+
+.details .description h4 {
+  font-size: .8rem;
+}
+
+.details .price a {
+  height: 3rem;
+  text-decoration: none;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.details .price {
+  background: #eeeeee;
+  margin-bottom: .5rem;
+  padding: 0 1rem;
+}
+
+.details .price .provider {
+  width: 50%;
+  font-size: .8rem;
+}
+
+.details .price .time {
+  font-size: .6rem;
+}
+
+.details .price .cost {
+  font-weight: bold;
+}
+
+.details .info .table {
+  text-transform: capitalize;
 }
