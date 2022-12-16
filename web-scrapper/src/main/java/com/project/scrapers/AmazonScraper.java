@@ -10,7 +10,7 @@ public class AmazonScraper extends Scraper {
     }
 
     @Override
-    public BookListing getBook(String isbn) {
+    public BookListing getBook(String isbn, String title) {
         try {
             scraper.get(PROVIDER_BASE_URL + isbn);
 

@@ -14,17 +14,28 @@ public abstract class Scraper implements Runnable, Debug {
     public final String PROVIDER_ID;
     public final String PROVIDER_BASE_URL;
 
-    protected final WebDriver scraper;
+    protected WebDriver scraper;
+
+    private final ChromeOptions options;
+
+    private final Thread hook = new Thread(this::close);
 
     Scraper(String id, String baseUrl) throws InterruptedException {
         PROVIDER_ID = id.toUpperCase();
-        ChromeOptions options = new ChromeOptions();
+        options = new ChromeOptions();
         options.setHeadless(!DEBUG);
-        scraper = new ChromeDriver(options);
-        scraper.get(baseUrl);
         this.PROVIDER_BASE_URL = baseUrl;
 
         Thread.sleep(3000);
+    }
+
+    private void startScraper() {
+        if (scraper != null) {
+            return;
+        }
+
+        scraper = new ChromeDriver(options);
+        scraper.get(PROVIDER_BASE_URL);
     }
 
     private List<Book> tasks;
@@ -42,6 +53,10 @@ public abstract class Scraper implements Runnable, Debug {
     synchronized public void run() {
         if (isRunning) return;
 
+        startScraper();
+
+        Runtime.getRuntime().addShutdownHook(hook);
+
         debug(PROVIDER_ID + " is scraping in the background");
         isRunning = true;
 
@@ -51,11 +66,13 @@ public abstract class Scraper implements Runnable, Debug {
         }
 
         for (var book : tasks) {
-            if (Thread.interrupted()) break;
+            if (Thread.interrupted())
+                break;
 
             scrape(book);
 
-            if (Thread.interrupted()) break;
+            if (Thread.interrupted())
+                break;
 
             try {
                 debug(PROVIDER_ID + " is handing over execution for 10 seconds.");
@@ -67,10 +84,11 @@ public abstract class Scraper implements Runnable, Debug {
         }
 
         isRunning = false;
+        Runtime.getRuntime().removeShutdownHook(hook);
         debug(PROVIDER_ID + " is done scraping in the background.");
     }
 
-    void scrape(Book book) {
+    private void scrape(Book book) {
         debug(this.PROVIDER_ID + " is scraping " + book.getIsbn());
 
         var params = new Database.Parameter[]{
@@ -99,7 +117,7 @@ public abstract class Scraper implements Runnable, Debug {
             }
         }
 
-        var listing = getBook(book.getIsbn());
+        var listing = getBook(book.getIsbn(), book.getTitle());
 
         // book not found.
         if (listing == null) {
@@ -123,5 +141,12 @@ public abstract class Scraper implements Runnable, Debug {
         debug(this.PROVIDER_ID + " successfully scraped " + book.getIsbn());
     }
 
-    abstract public BookListing getBook(String isbn);
+    public void close() {
+        System.out.println("Shutting down " + PROVIDER_ID + " scraper.");
+        if (scraper != null)
+            scraper.close();
+        System.out.println(PROVIDER_ID + " shutdown was successful");
+    }
+
+    abstract public BookListing getBook(String isbn, String title);
 }

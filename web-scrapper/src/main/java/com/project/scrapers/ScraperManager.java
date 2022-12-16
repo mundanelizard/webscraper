@@ -16,7 +16,6 @@ public class ScraperManager implements Debug {
         this.scrapers = scrapers;
     }
 
-
     public void start() throws InterruptedException {
         info("Starting web scraper manager");
         while (!Thread.interrupted()) {
@@ -36,5 +35,4 @@ public class ScraperManager implements Debug {
         }
         info("Stopping Scraper");
     }
-
 }
