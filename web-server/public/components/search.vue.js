@@ -19,10 +19,11 @@ const SearchComponent = {
         async handleSearch(batch) {
             this.loading = true;
 
-            if (typeof batch != "undefined") {
+            if (typeof batch === "number") {
                 this.batch = batch;
                 this.search = this.keyword
             } else {
+                console.log(this.search);
                 this.keyword = this.search;
             }
 
@@ -49,7 +50,7 @@ const SearchComponent = {
         this.handleSearch()
     },
     template: `
-    <div>
+    <div class="search">
         <header>
             <h1 class="logo"><a href="/">Book Checker</a></h1>
             <form @submit.prevent="handleSearch">
@@ -59,27 +60,30 @@ const SearchComponent = {
                     />
                 <button>Search</button>
             </form>
-            <div>
-                <h3>Showing {{total}} results for \"{{keyword}}\"</h3>
-            </div>
         </header>
+        <div class="info">
+            <h3 v-if="data.length !== 0 && !loading">Showing {{total}} results for \"{{keyword}}\"</h3>
+            <h3 v-else>Search Not Found</h3>
+        </div>
          
-        <section v-if="!loading">
-            <div v-for="book in data">
+        <section class="books" v-if="!loading">
+            <div class="book" v-for="book in data">
                 <a :href="'/#/book/' + book.isbn">
-                    <img :src="book.image" height="200" width="200" />
+                    <div class="image">
+                        <img :src="book.image" />
+                    </div>
                     <h3>{{book.title}}</h3>
-                    <em>{{book.isbn}}</em>
+                    <em>ISBN: {{book.isbn}}</em>
                 </a>
             </div>
         </section>
         
         <div v-else>Loading...</div>
         
-        <section>
+        <section class="pagination">
             <button 
                 @click="handleSearch(batch - 1)"
-                v-if="totalBatch != batch && batch != 1"
+                v-if="batch != 1"
                 >Previous</button>
             <button 
                 @click="handleSearch(n)"

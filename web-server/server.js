@@ -131,7 +131,7 @@ function server(options) {
 
       // response.end(data) can be replaced with
       // response.write(data) then response.end()
-      // anyone you fancy works, but I think this takes fewer lines.
+      // anyone works, but I think this takes fewer lines.
       if (!data) {
         response.end();
       } else if (typeof data === "string") {

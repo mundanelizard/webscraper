@@ -80,7 +80,6 @@ async function getBook(bookId) {
   // perform a join query on all the sub options
 
   const bookQuery = `SELECT * FROM books`
-      // + ` LEFT JOIN book_listings ON book_listings.book_id = books.id`
       +` WHERE id = ${database.escape(bookId)} OR isbn = ${database.escape(bookId)} `;
 
   const [book] = await asyncQuery(bookQuery);

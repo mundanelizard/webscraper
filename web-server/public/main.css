@@ -67,3 +67,121 @@ body {
   cursor: pointer;
   box-shadow: 1px 1px 1px lightgray;
 }
+
+.search {
+  max-width: 86rem;
+  margin: 0 auto;
+  /*background: aliceblue;*/
+  padding: 1rem;
+}
+
+.search .logo {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.search header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+
+.search header form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.search header form input {
+  height: 2.5rem;
+  width: 16rem;
+  border: 1px solid lightgray;
+  border-bottom-left-radius: 6rem;
+  border-top-left-radius: 6rem;
+  padding: 0 1rem;
+  font-family: inherit;
+}
+
+.search header form input:focus {
+  outline: none;
+  border: 1px solid gray;
+}
+
+.search header form button {
+  border: 1px solid lightgray;
+  cursor: pointer;
+  width: 6rem;
+  border-left: none;
+  border-bottom-right-radius: 6rem;
+  border-top-right-radius: 6rem;
+}
+
+
+.search .info {
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.search .info h3 {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+.book {
+  width: 20rem;
+  background: rgba(232, 232, 232, 0.48);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+}
+
+.book a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.book h3 {
+  font-size: 1rem;
+  text-transform: capitalize;
+  width: 100%;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  height: 2.54rem;
+}
+
+.book a {
+  color: black;
+  text-decoration: none;
+}
+
+.book .image {
+  height: 25rem;
+  /*max-width: 200px;*/
+  width: 100%;
+  /*max-height: 200px;*/
+  background: orange;
+}
+
+.book .image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.books {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.pagination button {
+  border: none;
+  height: 2rem;
+  margin-right: .2rem;
+  padding: .5rem 1rem;
+  cursor: pointer;
+}
