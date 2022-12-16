@@ -23,8 +23,7 @@ const SearchComponent = {
                 this.batch = batch;
                 this.search = this.keyword
             } else {
-                console.log(this.search);
-                this.keyword = this.search;
+                window.location.href = '#/search/?search=' + encodeURIComponent(this.search)
             }
 
             fetch(`/api/books?batch=${this.batch}&size=${this.size}&search=${this.search}`)
