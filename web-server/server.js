@@ -15,6 +15,12 @@ function staticHandler(req, res, basePath) {
   if (req.url === "/") url = path.join(basePath, "index.html");
   else url = path.join(basePath, path.normalize(req.url));
 
+  const exists = fs.existsSync(url);
+
+  if (!exists) {
+    url = path.join(basePath, "/index.html");
+  }
+
   fs.readFile(url, function (err, data) {
     if (err) {
       res.writeHead(404);

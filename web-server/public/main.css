@@ -4,67 +4,66 @@
 
 body {
   margin: 0;
-  padding: 1rem;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
-.page-header {
-  display: flex;
-  flex-wrap: wrap;
-  /* display: relative; */
-  /* justify-content: center; */
-  justify-content: space-between;
-  align-items: center;
-  height: 4rem;
-}
-
-.page-header div {
-  width: 20%;
-}
-
 .logo {
-  /* position: absolute; */
-  /* left: 1rem; */
-  font-size: 1.2rem;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  margin: 1rem;
+}
+
+.logo a {
   text-decoration: none;
-  color: rgb(66, 49, 43);
-  width: 20%;
+  color: black;
 }
 
-.search-bar {
-  width: 43.75rem;
-  height: 3.75rem;
-  border: 1px solid lightgray;
+.home {
   display: flex;
-  align-items: center;
-  padding: 1rem;
-  justify-self: center;
-  border-radius: 4px;
-}
-
-
-.search-bar input {
-  height: 100%;
-  width: 100%;
-  border: none;
-  outline: none;
-  font-family: inherit;
-}
-
-.search-bar button {
-  min-width: 2rem;
-  min-height: 2rem;
-  width: 2rem;
-  height: 2rem;
-  border: 5px solid lightgray;
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-
-.home-page {
-  height: calc(100vh - 4rem - 6rem);
-  display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  min-height: 100vh;
+}
+
+.home .logo {
+  margin-top: -5rem;
+}
+
+.home form {
+  display: flex;
+  width: 100vw;
+  padding: 1rem;
+  flex-direction: column;
+  box-sizing: border-box;
+  justify-content: center;
+  align-items: center;
+}
+
+.home form input {
+  display: block;
+  height: 3.5rem;
+  width: 100%;
+  max-width: 45rem;
+  box-sizing: border-box;
+  border-radius: 3.5rem;
+  padding: 1rem 2rem;
+  font-family: inherit;
+  font-size: 1.2rem;
+  border: 1px solid lightgray;
+}
+
+.home form input:focus {
+  outline: none;
+  border-color: gray;
+}
+
+.home form button {
+  height: 3rem;
+  width: 8rem;
+  margin-top: 1rem;
+  border-radius: 8rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px lightgray;
 }
