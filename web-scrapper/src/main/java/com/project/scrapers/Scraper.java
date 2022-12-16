@@ -125,6 +125,8 @@ public abstract class Scraper implements Runnable, Debug {
             return;
         }
 
+        System.out.println(PROVIDER_ID + " " + listing.getCreatedAt());
+
         listing.setBookId(book.getId());
         listing.setProvider(PROVIDER_ID);
 
@@ -134,6 +136,7 @@ public abstract class Scraper implements Runnable, Debug {
         } else {
             // set the listing id, so it'll be an update for an old listing.
             listing.setId(items.get(0).getId());
+            listing.setCreatedAt(items.get(0).getCreatedAt());
         }
 
         listing.setUpdatedAt(new Date());

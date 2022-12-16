@@ -4,10 +4,21 @@ import javax.persistence.*;
 import java.util.List;
 
 public class Database {
+
+
     private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("web-scraper");
 
+    private static final Object lock = new Object();
+
+    public static EntityManagerFactory getEntityManagerFactory() {
+        synchronized (lock) {
+            return emf;
+        }
+    }
+
+
     public static <T> void createOrUpdate(T item) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManagerFactory().createEntityManager();
         EntityTransaction et = em.getTransaction();
 
         try {
@@ -23,7 +34,7 @@ public class Database {
     }
 
     public static <T> List<T> getItems(Class<T> itemClass) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManagerFactory().createEntityManager();
         String query = String.format("SELECT t FROM %s t", itemClass.getSimpleName());
         TypedQuery<T> tq = em.createQuery(query, itemClass);
 
@@ -35,7 +46,7 @@ public class Database {
     }
 
     public static <T> List<T> getItemsWhere(Class<T> itemClass, String where, Parameter[] params) {
-        EntityManager em = emf.createEntityManager();
+        EntityManager em = getEntityManagerFactory().createEntityManager();
         String query = String.format("SELECT t FROM %s t WHERE %s", itemClass.getSimpleName(), where);
         TypedQuery<T> tq = em.createQuery(query, itemClass);
 

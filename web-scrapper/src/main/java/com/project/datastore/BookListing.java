@@ -86,4 +86,9 @@ public class BookListing {
     public void setPrice(String price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return " " + price + " " + bookId + " " + provider + " " + url + " " + price + " " + createdAt + " " + updatedAt;
+    }
 }
