@@ -3,8 +3,15 @@ package com.project.scrapers;
 import com.project.datastore.BookListing;
 import org.openqa.selenium.By;
 
+/**
+ * Handles scraping book of blackwells.co.uk
+ */
 public class BlackwellScraper extends Scraper {
 
+    /**
+     * Sets id and baseurl for scraper
+     * @throws InterruptedException
+     */
     public BlackwellScraper() throws InterruptedException {
         super("BLACKWELLS", "https://blackwells.co.uk/bookshop/home");
     }
@@ -28,7 +35,6 @@ public class BlackwellScraper extends Scraper {
 
             return listing;
         } catch (Exception ex) {
-            System.out.println(ex);
             return null;
         }
     }

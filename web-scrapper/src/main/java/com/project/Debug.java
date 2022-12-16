@@ -5,6 +5,7 @@ public interface Debug {
      * true to debug and show all console output.
      */
     boolean DEBUG = true;
+    boolean SHOW_BROWSER = false;
 
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";

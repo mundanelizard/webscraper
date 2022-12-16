@@ -20,15 +20,24 @@ public abstract class Scraper implements Runnable, Debug {
 
     private final Thread hook = new Thread(this::close);
 
+    /**
+     * Creates a new generic web scraper
+     * @param id web scraper identification used for logging and saving in the database
+     * @param baseUrl the url where the web scraper will scrape
+     * @throws InterruptedException when it fails to create create a webscraper
+     */
     Scraper(String id, String baseUrl) throws InterruptedException {
         PROVIDER_ID = id.toUpperCase();
         options = new ChromeOptions();
-        options.setHeadless(!DEBUG);
+        options.setHeadless(!SHOW_BROWSER);
         this.PROVIDER_BASE_URL = baseUrl;
 
         Thread.sleep(3000);
     }
 
+    /**
+     * Instantiates the scraper
+     */
     private void startScraper() {
         if (scraper != null) {
             return;
@@ -42,14 +51,25 @@ public abstract class Scraper implements Runnable, Debug {
 
     private Boolean isRunning = false;
 
+    /**
+     * Is true is thread is active and false when it isn't
+     * @return a boolean
+     */
     public Boolean getIsRunning() {
         return isRunning;
     }
 
+    /**
+     * Set the books for the scraper to scrape.
+     * @param books list of books to scrape
+     */
     public void setTasks(List<Book> books) {
         this.tasks = books;
     }
 
+    /**
+     * Starts the automated scraping process
+     */
     synchronized public void run() {
         if (isRunning) return;
 
@@ -88,6 +108,10 @@ public abstract class Scraper implements Runnable, Debug {
         debug(PROVIDER_ID + " is done scraping in the background.");
     }
 
+    /**
+     * Handles the scraping and saving of a single scraper.
+     * @param book the book to scrape
+     */
     private void scrape(Book book) {
         debug(this.PROVIDER_ID + " is scraping " + book.getIsbn());
 
@@ -125,8 +149,6 @@ public abstract class Scraper implements Runnable, Debug {
             return;
         }
 
-        System.out.println(PROVIDER_ID + " " + listing.getCreatedAt());
-
         listing.setBookId(book.getId());
         listing.setProvider(PROVIDER_ID);
 
@@ -136,7 +158,8 @@ public abstract class Scraper implements Runnable, Debug {
         } else {
             // set the listing id, so it'll be an update for an old listing.
             listing.setId(items.get(0).getId());
-            listing.setCreatedAt(items.get(0).getCreatedAt());
+            var createdAt = items.get(0).getCreatedAt();
+            listing.setCreatedAt(createdAt != null ? createdAt : new Date());
         }
 
         listing.setUpdatedAt(new Date());
@@ -144,6 +167,9 @@ public abstract class Scraper implements Runnable, Debug {
         debug(this.PROVIDER_ID + " successfully scraped " + book.getIsbn());
     }
 
+    /**
+     * Closes the scraper gracefully.
+     */
     public void close() {
         System.out.println("Shutting down " + PROVIDER_ID + " scraper.");
         if (scraper != null)

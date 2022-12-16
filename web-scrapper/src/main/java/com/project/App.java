@@ -3,8 +3,8 @@ package com.project;
 import com.project.datastore.Database;
 import com.project.scrapers.*;
 import com.project.datastore.Book;
-
-import java.util.ArrayList;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Entry class for web scrapping application.
@@ -12,13 +12,7 @@ import java.util.ArrayList;
 public class App {
 
     public static void main (String[] args) throws InterruptedException {
-        /* TODO: Initialize the scrapers with dependency injection */
-        var scrapers = new ArrayList<Scraper>();
-        scrapers.add(new AmazonScraper());
-        scrapers.add(new WaterstonesScraper());
-        scrapers.add(new BlackwellScraper());
-        scrapers.add(new FoylesScraper());
-        scrapers.add(new HiveScraper());
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
         var books = Database.getItems(Book.class);
 
@@ -28,7 +22,8 @@ public class App {
             books = Database.getItems(Book.class);
         }
 
-        new ScraperManager(books, scrapers)
-                .start();
+        var scraperManager = (ScraperManager) context.getBean("scraperManager");
+        scraperManager.setBooks(books);
+        scraperManager.start();
     }
 }

@@ -3,8 +3,15 @@ package com.project.scrapers;
 import com.project.datastore.BookListing;
 import org.openqa.selenium.By;
 
+/**
+ * Handles scraping for waterstones.com
+ */
 public class WaterstonesScraper extends Scraper{
 
+    /**
+     * Sets the id and baseUrl of the scraper
+     * @throws InterruptedException when the scraper fails to start
+     */
     public WaterstonesScraper() throws InterruptedException {
         super("WATERSTONES", "https://www.waterstones.com/");
     }

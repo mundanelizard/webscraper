@@ -3,8 +3,15 @@ package com.project.scrapers;
 import com.project.datastore.BookListing;
 import org.openqa.selenium.By;
 
+/**
+ * Scrapes hive for book comparison
+ */
 public class HiveScraper extends Scraper {
 
+    /**
+     * Sets up id and baseUrl for HIVe
+     * @throws InterruptedException when there's an error setting up scraper
+     */
     public HiveScraper() throws InterruptedException {
         super("HIVE", "https://www.hive.co.uk/");
     }

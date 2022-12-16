@@ -89,6 +89,6 @@ public class BookListing {
 
     @Override
     public String toString() {
-        return " " + price + " " + bookId + " " + provider + " " + url + " " + price + " " + createdAt + " " + updatedAt;
+        return id + " " + price + " " + bookId + " " + provider + " " + url + " " + price + " " + createdAt + " " + updatedAt;
     }
 }

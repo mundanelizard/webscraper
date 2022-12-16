@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Scrapes all the books of amazon which we'll crosscheck later on other platforms
+ */
 public class BookScraper implements Debug {
     public static final String BASE_URL = "https://www.amazon.co.uk";
 
@@ -21,8 +24,11 @@ public class BookScraper implements Debug {
     private int index = 0;
     private String currentPage = String.format("%s/s?i=stripbooks&fs=true&page=%d", BASE_URL, page);
 
-    // store the current list url
 
+    /**
+     * Set options and create webscraper
+     * @throws InterruptedException when it fails to start webscraper.
+     */
     public BookScraper() throws InterruptedException {
         ChromeOptions options = new ChromeOptions();
         options.setHeadless(!DEBUG);
@@ -33,6 +39,10 @@ public class BookScraper implements Debug {
 
     }
 
+    /**
+     * Begins scraping books of amazon.
+     * @throws InterruptedException
+     */
     public void start() throws InterruptedException {
         while(hasNext()) {
             var next = getNext();
@@ -52,6 +62,10 @@ public class BookScraper implements Debug {
         }
     }
 
+    /**
+     * Checks if there's more books on the list
+     * @return true if there is and no if there isn't.
+     */
     private boolean hasNext() {
         if (index < total) {
             return true;
@@ -71,12 +85,20 @@ public class BookScraper implements Debug {
         return total != 0;
     }
 
+    /**
+     * Get the current element on the page
+     * @return a list of WebElements
+     */
     private List<WebElement> getCurrentPageItems() {
         // get the next page
         scraper.get(String.format(currentPage, BASE_URL, page));
         return scraper.findElements(By.cssSelector(".s-result-item .s-card-container"));
     }
 
+    /**
+     * Gets the next book to scrape
+     * @return
+     */
     private String getNext() {
         index += 1;
 
@@ -91,6 +113,11 @@ public class BookScraper implements Debug {
         }
     }
 
+    /**
+     * Handles the book scraping process.
+     * @param url of the book to scrape
+     * @throws Exception
+     */
     private void scrape(String url) throws Exception {
         debug(url);
         scraper.get(url);
@@ -107,6 +134,11 @@ public class BookScraper implements Debug {
         debug("Successfully scraped " + book.getTitle());
     }
 
+    /**
+     * Creates a relationship between books and genre
+     * @param bookId the id of the book
+     * @param genreIds the id of the genre
+     */
     private void createBookGenreRelationship(Long bookId, List<Long> genreIds) {
         for (var genreId : genreIds) {
             var bg = new BooksGenres();
@@ -116,6 +148,11 @@ public class BookScraper implements Debug {
         }
     }
 
+    /**
+     * Creates a relationship between author and book
+     * @param bookId the id of the book
+     * @param authorsIds the ids of the authors
+     */
     private void createAuthorBookRelationship(Long bookId, List<Long> authorsIds) {
         for (var authorId : authorsIds) {
             var ab = new BooksAuthors();
@@ -125,6 +162,11 @@ public class BookScraper implements Debug {
         }
     }
 
+    /**
+     * Gets all the details a book
+     * @return an instance of a Book
+     * @throws Exception when the web element search fails.
+     */
     private Book getBook() throws Exception {
         var book = new Book();
 
@@ -161,6 +203,10 @@ public class BookScraper implements Debug {
         return book;
     }
 
+    /**
+     * Gets all the authors for a book
+     * @return a list of authors
+     */
     private List<Long> getAuthors() {
         List<String> authors = scraper
                 .findElements(By.cssSelector("#bylineInfo span.author a.a-link-normal.contributorNameID"))
@@ -212,6 +258,10 @@ public class BookScraper implements Debug {
         return authorIds;
     }
 
+    /**
+     * Gets all the genre for a book
+     * @return a list of genre ids
+     */
     private List<Long> getGenres() {
         var genres = scraper
                 .findElement(By.cssSelector("#detailBulletsWrapper_feature_div > ul:nth-child(4) > li > span > ul"))
@@ -247,6 +297,10 @@ public class BookScraper implements Debug {
         return genreIds;
     }
 
+    /**
+     * Gets the image of the book
+     * @return a string to the image url
+     */
     private String getImage() {
         List<String> images = scraper.findElements(By.cssSelector("#ebooksImgBlkFront"))
                 .stream()
@@ -270,6 +324,12 @@ public class BookScraper implements Debug {
         return image;
     }
 
+    /**
+     * Gets the description of a book
+     * @param title the title of the book to get the description
+     * @return the books description
+     * @throws Exception when there isn't a web element.
+     */
     private String getDescription(String title) throws Exception {
         List<String> descriptions = scraper
                 .findElements(
@@ -286,6 +346,10 @@ public class BookScraper implements Debug {
         return descriptions.get(0);
     }
 
+    /**
+     * Gets the isbn of the book
+     * @return the book isbn
+     */
     private String getIsbn() {
         try {
         return scraper

@@ -1,4 +1,4 @@
 package com.project.scrapers;
 
-public class HiveScraper {
+public class HiveScraperTest {
 }

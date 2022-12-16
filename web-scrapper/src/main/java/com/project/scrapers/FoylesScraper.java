@@ -3,7 +3,14 @@ package com.project.scrapers;
 import com.project.datastore.BookListing;
 import org.openqa.selenium.By;
 
+/**
+ * Scrapes foyles for book price
+ */
 public class FoylesScraper extends Scraper {
+    /**
+     * Sets the id and the baseUrl of the scraper
+     * @throws InterruptedException
+     */
     public FoylesScraper()  throws InterruptedException {
         super("FOYLES", "https://www.foyles.co.uk/");
     }

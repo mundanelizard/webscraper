@@ -4,7 +4,14 @@ import com.project.datastore.BookListing;
 import org.openqa.selenium.By;
 
 
+/**
+ * Handles Amazon Scraping
+ */
 public class AmazonScraper extends Scraper {
+    /**
+     * Creates a new Amazon scraper
+     * @throws InterruptedException
+     */
     public AmazonScraper() throws InterruptedException {
         super("AMAZON", "https://www.amazon.co.uk/s/ref=sr_adv_b?search-alias=stripbooks&field-isbn=");
     }
